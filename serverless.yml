@@ -1,0 +1,28 @@
+service: ${env:SERVICE_NAME}
+package:
+  exclude:
+    - .env
+    - .env*
+  include:
+    - handler.js
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: ${env:AWS_REGION}
+  stage: ${env:ENV}
+
+functions:
+  publish:
+    handler: handler.handler
+    environment:
+      SUMO_ENDPOINT: ${env:SUMO_ENDPOINT}
+      SOURCE_CATEGORY_OVERRIDE: ${env:SOURCE_CATEGORY_OVERRIDE}
+      SOURCE_HOST_OVERRIDE: ${env:SOURCE_HOST_OVERRIDE}
+      SOURCE_NAME_OVERRIDE: ${env:SOURCE_NAME_OVERRIDE}
+
+Outputs:
+  PublishLambdaFunctionArn:
+    Description: The ARN for SumoLogic Lambda function
+    Value:
+      "Fn::GetAtt": [ publishLambdaFunction, Arn ]
+    Export: {"Name": "${env:SERVICE_NAME}:${env:ENV}:PublishLambdaArn"}
