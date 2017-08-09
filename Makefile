@@ -8,7 +8,7 @@ endif
 # Entry Points #
 ################
 
-deploy:
+deploy: $(DOTENV_TARGET)
 	docker-compose run --rm serverless make _deploy
 
 remove: $(DOTENV_TARGET)

@@ -25,4 +25,4 @@ Outputs:
     Description: The ARN for SumoLogic Lambda function
     Value:
       "Fn::GetAtt": [ publishLambdaFunction, Arn ]
-    Export: {"Name": "${env:SERVICE_NAME}:${env:ENV}:PublishLambdaArn"}
+    Export: ${env:SERVICE_NAME}:${env:ENV}:PublishLambdaArn
