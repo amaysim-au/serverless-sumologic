@@ -11,7 +11,7 @@ Create a SumoLogic Lambda function which publishes the CloudWatch logs to SumoLo
 
 ## Environment variables
 
-Make sure you have set your environment variables properly or create a file `.env`. `.env.template` contains the environment variables that are used by the application.
+Make sure you have set your environment variables properly or create a file `.env`. The file `.env.template` contains the environment variables that are used by the application.
 
 ## Usage
 
