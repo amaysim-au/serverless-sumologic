@@ -20,9 +20,10 @@ functions:
       SOURCE_HOST_OVERRIDE: ${env:SOURCE_HOST_OVERRIDE}
       SOURCE_NAME_OVERRIDE: ${env:SOURCE_NAME_OVERRIDE}
 
-Outputs:
-  PublishLambdaFunctionArn:
-    Description: The ARN for SumoLogic Lambda function
-    Value:
-      "Fn::GetAtt": [ publishLambdaFunction, Arn ]
-    Export: ${env:SERVICE_NAME}:${env:ENV}:PublishLambdaArn
+resources:
+  Outputs:
+    PublishLambdaFunctionArn:
+      Description: The ARN for SumoLogic Lambda function
+      Value:
+        "Fn::GetAtt": [ PublishLambdaFunction, Arn ]
+      Export: {"Name": "${env:SERVICE_NAME}-${env:ENV}-PublishLambdaArn"}
