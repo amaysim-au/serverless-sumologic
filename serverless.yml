@@ -10,6 +10,8 @@ provider:
   runtime: nodejs6.10
   region: ${env:AWS_REGION}
   stage: ${env:ENV}
+  stackTags:
+    FRAMEWORK: serverless
 
 functions:
   publish:

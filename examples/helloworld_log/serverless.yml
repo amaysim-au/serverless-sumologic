@@ -1,0 +1,40 @@
+service: amaysim-helloworld-log
+package:
+  exclude:
+    - .env*
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: ${env:AWS_REGION}
+  stage: ${env:ENV}
+  stackTags:
+    FRAMEWORK: serverless
+
+functions:
+  helloWorld:
+    handler: handler.helloWorld
+    events:
+      - http:
+          path: hello-world
+          method: get
+resources:
+  Resources:
+    HelloWorldLambdaPermissionInvoke:
+      Type: AWS::Lambda::Permission
+      DependsOn:
+        - HelloWorldLambdaFunction
+      Properties:
+        Action: lambda:InvokeFunction
+        FunctionName: {"Fn::ImportValue": "${env:SUMOLOGIC_LAMBDA_ARN_EXPORT_NAME}"}
+        Principal: logs.${env:AWS_REGION}.amazonaws.com
+        SourceArn: {"Fn::GetAtt": ["HelloWorldLogGroup", "Arn"]}
+        SourceAccount: {"Ref": "AWS::AccountId"}
+
+    HelloWorldSubscriptionFilter:
+      Type: "AWS::Logs::SubscriptionFilter"
+      DependsOn:
+        - HelloWorldLambdaPermissionInvoke
+      Properties:
+        LogGroupName: {"Ref": "HelloWorldLogGroup"}
+        DestinationArn: {"Fn::ImportValue": "${env:SUMOLOGIC_LAMBDA_ARN_EXPORT_NAME}"}
+        FilterPattern: ""

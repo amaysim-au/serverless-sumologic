@@ -1,13 +1,6 @@
-# serverless-sumologic
+# HelloWorld Log
 
-Create a SumoLogic Lambda function which publishes the CloudWatch logs to SumoLogic.
-
-## Prerequisites
-
-- Docker
-- Docker Compose
-- Make
-- AWS Admin Access
+This example shows how to connect to a SumoLogic Lambda using the `resources` section of `serverless.yml`.
 
 ## Environment variables
 
@@ -18,8 +11,8 @@ Make sure you have set your environment variables properly or create a file `.en
 ```bash
 # using .env.local for .env as an example
 $ make dotenv DOTENV=.env.local
-# Deploy the lambda stack
+# deploy
 $ make deploy
-# Remove the lambda stack
+# remove
 $ make remove
 ```
