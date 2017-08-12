@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "serverless-log-forwarding": "^1.1.0"
+  }
+}
