@@ -3,6 +3,7 @@ package:
   exclude:
     - .env
     - .env*
+    - ./**
   include:
     - handler.js
 provider:

@@ -1,7 +1,9 @@
 service: amaysim-helloworld-log
 package:
   exclude:
-    - .env*
+    - ./**
+  include:
+    - handler.js
 provider:
   name: aws
   runtime: nodejs6.10
