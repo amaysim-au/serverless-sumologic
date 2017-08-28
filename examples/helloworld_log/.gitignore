@@ -1,4 +1,4 @@
 .env*
 !.env.template
-!.env.local
+!.env.example
 .serverless

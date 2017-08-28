@@ -16,8 +16,8 @@ Make sure you have set your environment variables properly or create a file `.en
 ## Usage
 
 ```bash
-# using .env.local for .env as an example
-$ make dotenv DOTENV=.env.local
+# using .env.example for .env as an example
+$ make dotenv DOTENV=.env.example
 # Deploy the lambda stack
 $ make deploy
 # Remove the lambda stack

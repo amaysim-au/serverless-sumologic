@@ -1,5 +1,5 @@
 .env*
 !.env.template
-!.env.local
+!.env.example
 .serverless
 node_modules
