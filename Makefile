@@ -3,12 +3,15 @@ ifdef DOTENV
 else
 	DOTENV_TARGET=.env
 endif
+ifdef AWS_ROLE
+	ASSUME_REQUIRED?=assumeRole
+endif
 
 ################
 # Entry Points #
 ################
 
-deploy: $(DOTENV_TARGET)
+deploy: $(DOTENV_TARGET) $(ASSUME_REQUIRED)
 	docker-compose run --rm serverless make _deploy
 
 remove: $(DOTENV_TARGET)
@@ -16,6 +19,10 @@ remove: $(DOTENV_TARGET)
 
 shell: $(DOTENV_TARGET)
 	docker-compose run --rm serverless bash
+
+assumeRole: .env
+	docker run --rm -e "AWS_ACCOUNT_ID" -e "AWS_ROLE" amaysim/aws:1.1.1 assume-role.sh >> .env
+.PHONY: assumeRole
 
 ##########
 # Others #
