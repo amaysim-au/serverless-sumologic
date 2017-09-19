@@ -21,7 +21,7 @@ shell: $(DOTENV_TARGET)
 	docker-compose run --rm serverless bash
 
 assumeRole: .env
-	docker run --rm -e "AWS_ACCOUNT_ID" -e "AWS_ROLE" amaysim/aws:1.1.1 assume-role.sh >> .env
+	docker run --rm -e "AWS_ACCOUNT_ID" -e "AWS_ROLE" amaysim/aws:1.1.3 assume-role.sh >> .env
 .PHONY: assumeRole
 
 ##########
