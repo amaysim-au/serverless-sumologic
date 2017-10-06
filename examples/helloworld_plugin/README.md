@@ -1,6 +1,6 @@
 # HelloWorld Plugin
 
-This example shows how to connect to a SumoLogic Lambda using the plugin [https://github.com/amplify-education/serverless-log-forwarding](serverless-log-forwarding).
+This example shows how to connect to a SumoLogic Lambda using the plugin [serverless-log-forwarding](https://github.com/amplify-education/serverless-log-forwarding).
 
 ## Environment variables
 
