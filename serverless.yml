@@ -9,10 +9,41 @@ package:
 provider:
   name: aws
   runtime: nodejs6.10
+  memorySize: 128  # memory usage is normally ~50mb
+  versionFunctions: false
+  deploymentBucket:
+    name: amaysim-serverless-deployments-${env:AWS_ACCOUNT_ID}-${env:AWS_REGION}
   region: ${env:AWS_REGION}
   stage: ${env:ENV}
   stackTags:
     FRAMEWORK: serverless
+
+plugins:
+  - serverless-plugin-aws-alerts
+
+custom:
+  alerts:
+    dashboards: true
+    topics:
+      ok: ${env:OPS_GENIE_SNS_ARN}
+      alarm: ${env:OPS_GENIE_SNS_ARN}
+      insufficientData: ${env:OPS_GENIE_SNS_ARN}
+    definitions:
+      functionErrors:
+        threshold: 100  # you should typically be getting 0 errors
+        period: 900  # 15m
+      functionDuration:
+        threshold: 500  # normal duration is <100ms
+        statistic: 'p95'
+        period: 900
+      functionInvocations:
+        threshold: 10000  # our current peak is 1.25k, you may need to adjust this
+        period: 900
+    alarms:
+      - functionErrors
+      - functionThrottles
+      - functionInvocations
+      - functionDuration
 
 functions:
   publish:
