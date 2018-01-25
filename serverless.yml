@@ -35,7 +35,7 @@ custom:
       functionDuration:
         threshold: 500  # normal duration is <100ms
         statistic: 'p95'
-        period: 900
+        period: 1800
       functionInvocations:
         threshold: 10000  # our current peak is 1.25k, you may need to adjust this
         period: 900
