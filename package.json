@@ -1,0 +1,10 @@
+{
+  "name": "serverless-sumologic",
+  "version": "0.0.1",
+  "description": "serverless-sumologic",
+  "author": "Amaysim",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "serverless-plugin-aws-alerts": "^1.2.4"
+  }
+}

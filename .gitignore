@@ -1,4 +1,7 @@
+# Serverless directories
+.serverless
 .env*
 !.env.template
 !.env.example
-.serverless
+node_modules/
+node_modules.zip
