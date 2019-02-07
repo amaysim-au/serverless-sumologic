@@ -5,7 +5,6 @@
 // serverless-log-forward plugin adding the same permission whenever a new stack
 // was creted. https://github.com/amplify-education/serverless-log-forwarding/pull/22
 const AWS = require('aws-sdk')
-const delay = require('delay')
 
 const getEnvironmentVariableValue = (name) => {
   if (!process.env[name]) {
@@ -30,6 +29,8 @@ const addGenericPermissionForCloudWatchLogs = (awsAccountId, awsRegion, lambda,
   return lambda.addPermission(params).promise()
 }
 
+const wait = milleseconds => new Promise(resolve => setTimeout(resolve, milleseconds))
+
 // removePermissions removes all permission of lambda functionName and leaves
 // permission with statementId exceptGenericPermissionSid untouched.
 const removePermissions = async (lambda, functionName, exceptGenericPermissionSid) => {
@@ -38,15 +39,13 @@ const removePermissions = async (lambda, functionName, exceptGenericPermissionSi
 
   for (let i = 0; i < policy.Statement.length; i += 1) {
     if (policy.Statement[i].Sid !== exceptGenericPermissionSid) {
-      (async () => {
-        // delay to avoid "TooManyRequestsException: Rate exceeded" error
-        await delay(5000)
-      })()
-      console.log(`removing permission ${policy.Statement[i].Sid}`);
-      (async () => {
-        await lambda.removePermission({ FunctionName: functionName,
-          StatementId: policy.Statement[i].Sid }).promise()
-      })()
+      console.log(`removing permission ${policy.Statement[i].Sid}`)
+
+      // eslint-disable-next-line no-await-in-loop
+      await lambda.removePermission({ FunctionName: functionName,
+        StatementId: policy.Statement[i].Sid }).promise()
+      // delay to avoid "TooManyRequestsException: Rate exceeded" error
+      await wait(2000) // eslint-disable-line no-await-in-loop
     }
   }
 }
@@ -57,6 +56,7 @@ const removePermissions = async (lambda, functionName, exceptGenericPermissionSi
   const functionName = getEnvironmentVariableValue('FUNCTION_NAME')
   const awsAccountId = getEnvironmentVariableValue('AWS_ACCOUNT_ID')
   const awsRegion = getEnvironmentVariableValue('AWS_REGION')
-  await addGenericPermissionForCloudWatchLogs(awsAccountId, awsRegion, lambda, functionName, statementId)
+  await addGenericPermissionForCloudWatchLogs(awsAccountId, awsRegion, lambda,
+    functionName, statementId)
   await removePermissions(lambda, functionName, statementId)
 })()
