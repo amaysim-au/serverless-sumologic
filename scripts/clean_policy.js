@@ -5,6 +5,7 @@
 // serverless-log-forward plugin adding the same permission whenever a new stack
 // was creted. https://github.com/amplify-education/serverless-log-forwarding/pull/22
 const AWS = require('aws-sdk')
+const delay = require('delay')
 
 const getEnvironmentVariableValue = (name) => {
   if (!process.env[name]) {
@@ -34,11 +35,20 @@ const addGenericPermissionForCloudWatchLogs = (awsAccountId, awsRegion, lambda,
 const removePermissions = async (lambda, functionName, exceptGenericPermissionSid) => {
   const data = await lambda.getPolicy({ FunctionName: functionName }).promise()
   const policy = JSON.parse(data.Policy)
-  policy.Statement.forEach(async (s) => {
-    if (s.Sid !== exceptGenericPermissionSid) {
-      await lambda.removePermission({ FunctionName: functionName, StatementId: s.Sid }).promise()
+
+  for (let i = 0; i < policy.Statement.length; i += 1) {
+    if (policy.Statement[i].Sid !== exceptGenericPermissionSid) {
+      (async () => {
+        // delay to avoid "TooManyRequestsException: Rate exceeded" error
+        await delay(5000)
+      })()
+      console.log(`removing permission ${policy.Statement[i].Sid}`);
+      (async () => {
+        await lambda.removePermission({ FunctionName: functionName,
+          StatementId: policy.Statement[i].Sid }).promise()
+      })()
     }
-  })
+  }
 }
 
 (async () => {
