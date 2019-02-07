@@ -1,3 +1,6 @@
+COMPOSE_RUN_SERVERLESS = docker-compose run --rm serverless
+NODE = $(COMPOSE_RUN_SERVERLESS) npx babel-node
+
 ifdef DOTENV
 	DOTENV_TARGET=dotenv
 else
@@ -62,3 +65,6 @@ _deploy:
 _remove:
 	sls remove -v
 	rm -fr .serverless
+
+cleanPolicy:
+	$(NODE) scripts/clean_policy.js
