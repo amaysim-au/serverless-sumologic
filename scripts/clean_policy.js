@@ -1,4 +1,4 @@
-// This scripts is to clean up Lambda Policy by adding a generic lambda permission
+// This script is to clean up Lambda Policy by adding a generic lambda permission
 // that allows CloudWatch Logs to invoke the lambda FUNCTION_NAME and removing all
 // other permissions.
 // This was created because the function's policy size exceeded the limit due to
@@ -41,21 +41,26 @@ const removePermissions = async (lambda, functionName, exceptGenericPermissionSi
     if (policy.Statement[i].Sid !== exceptGenericPermissionSid) {
       console.log(`removing permission ${policy.Statement[i].Sid}`)
 
-      // eslint-disable-next-line no-await-in-loop
+      /* eslint-disable no-await-in-loop */
       await lambda.removePermission({ FunctionName: functionName,
         StatementId: policy.Statement[i].Sid }).promise()
       // delay to avoid "TooManyRequestsException: Rate exceeded" error
-      await wait(2000) // eslint-disable-line no-await-in-loop
+      await wait(1500)
+      /* eslint-enable no-await-in-loop */
     }
   }
 }
 
 (async () => {
-  const lambda = new AWS.Lambda()
-  const statementId = `GenericInvokePermissionForCloudWatchLogs-${Date.now()}`
-  const functionName = getEnvironmentVariableValue('FUNCTION_NAME')
+  const env = getEnvironmentVariableValue('ENV')
+  const serviceName = getEnvironmentVariableValue('SERVICE_NAME')
   const awsAccountId = getEnvironmentVariableValue('AWS_ACCOUNT_ID')
   const awsRegion = getEnvironmentVariableValue('AWS_REGION')
+
+  const lambda = new AWS.Lambda()
+  const statementId = `GenericInvokePermissionForCloudWatchLogs-${Date.now()}`
+  const functionName = `${serviceName}-${env}-publish`
+
   await addGenericPermissionForCloudWatchLogs(awsAccountId, awsRegion, lambda,
     functionName, statementId)
   await removePermissions(lambda, functionName, statementId)
