@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "airbnb-base"
+  ],
+  "env": {
+    "node": true
+  },
+  "rules": {
+      "semi": [2, "never"],
+      "import/prefer-default-export": "off",
+      "object-curly-newline": "off",
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          "devDependencies": ["scripts/**"]
+        }
+      ]
+  }
+}
