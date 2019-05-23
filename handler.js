@@ -142,7 +142,7 @@ exports.handler = function (event, context) {
         context.fail('Invalid SUMO_ENDPOINT environment variable: ' + SumoURL);
     }
 
-    var zippedInput = new Buffer(event.awslogs.data, 'base64');
+    var zippedInput = new Buffer.from(event.awslogs.data, 'base64');
 
     zlib.gunzip(zippedInput, function (e, buffer) {
         if (e) {
