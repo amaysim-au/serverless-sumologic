@@ -19,9 +19,6 @@ endif
 deps: $(DOTENV_TARGET)
 	docker-compose run --rm serverless make _deps
 
-build: $(DOTENV_TARGET)
-	docker-compose run --rm serverless make _build
-
 deploy: $(DOTENV_TARGET) $(ASSUME_REQUIRED)
 	docker-compose run --rm serverless make _deploy
 
@@ -39,16 +36,16 @@ assumeRole: .env
 # Security Patching #
 #####################
 
-ciAudit: $(ENVFILE) auditFix deps test
+ciAudit: $(DOTENV_TARGET) auditFix deps
 	git status | grep "nothing to commit" || (git commit -am 'auto-patched security vulnerabilities' && git push)
 
-upgrade: $(ENVFILE) #deps
+upgrade: $(DOTENV_TARGET)
 	docker-compose run --rm serverless make _upgrade
 
-audit: $(ENVFILE) deps
+audit: $(DOTENV_TARGET) deps
 	docker-compose run --rm serverless make _audit
 
-auditFix: $(ENVFILE)
+auditFix: $(DOTENV_TARGET)
 	docker-compose run --rm serverless make _auditFix
 
 _upgrade:
@@ -57,8 +54,9 @@ _upgrade:
 _audit:
 	yarn audit --level $(SECURITY_AUDIT_LEVEL)
 
-_auditFix: _registry
-	yarn audit --level $(SECURITY_AUDIT_LEVEL) | grep "Low\|Moderate\|High\|Critical" && make _runAuditFix|| echo "No high and critical vulnerabilities found."
+_auditFix:
+	yarn config set registry http://registry.npmjs.org
+	yarn audit --level $(SECURITY_AUDIT_LEVEL) | grep "Low\|Moderate\|High\|Critical" && make _runAuditFix || echo "No high and critical vulnerabilities found."
 
 _runAuditFix:
 	npm i --package-lock-only
@@ -81,27 +79,11 @@ dotenv:
 	@echo "Overwrite .env with $(DOTENV)"
 	cp $(DOTENV) .env
 
-_registry:
-	echo "//registry.npmjs.org/:_authToken=$(NPM_TOKEN)" >> .npmrc
+_deps:
 	yarn config set registry http://registry.npmjs.org
-
-_deps: _registry
 	yarn install --no-bin-links
 
-# if there is no node_modules.zip artefact then fetch from npm and make node_modules.zip artefact
-node_modules.zip: _registry _deps
-	zip -rq node_modules.zip node_modules/
-
-# if there is no node_modules directory then unzip from node_modules.zip artefact
-node_modules:
-	mkdir -p node_modules
-	unzip -qo -d . node_modules.zip
-
-_build: node_modules.zip node_modules
-
 _deploy:
-	mkdir -p node_modules
-	unzip -qo -d . node_modules.zip
 	rm -fr .serverless
 	sls deploy -v
 
