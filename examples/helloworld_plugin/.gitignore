@@ -1,5 +1,0 @@
-.env*
-!.env.template
-!.env.example
-.serverless
-node_modules

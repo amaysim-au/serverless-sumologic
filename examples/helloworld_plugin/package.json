@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "serverless-log-forwarding": "^1.1.0",
-    "bunyan": "^1.8.12"
-  }
-}
