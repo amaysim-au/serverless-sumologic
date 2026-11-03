@@ -1,4 +1,4 @@
-# serverless-sumologic
+# [deprecated] serverless-sumologic
 
 Create a SumoLogic Lambda function which publishes the CloudWatch logs to SumoLogic.
 
